@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 dash = "*"
 pandas = "*"
+pymongo = "*"
+neo4j = "*"
+pymysql = "*"
 
 [dev-packages]
 
