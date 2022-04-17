@@ -9,6 +9,7 @@ pandas = "*"
 pymongo = "*"
 neo4j = "*"
 pymysql = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
