@@ -5,7 +5,10 @@ from dash import Dash, html, dcc
 import plotly.express as px
 import pandas as pd
 
-app = Dash(__name__)
+from uiuc_411_project.flask_api import flask_app, register_routes
+
+register_routes(flask_app)
+app = Dash(__name__, server=flask_app)
 
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options

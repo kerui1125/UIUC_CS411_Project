@@ -9,7 +9,10 @@ pandas = "*"
 pymongo = "*"
 neo4j = "*"
 pymysql = "*"
+flask = "*"
 sqlalchemy = "*"
+plotly = "*"
+geopy = "*"
 
 [dev-packages]
 
