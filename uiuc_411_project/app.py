@@ -7,6 +7,8 @@ from uiuc_411_project.flask_api import flask_app, register_routes
 from uiuc_411_project.widgets.us_college_map import generate_us_college_map
 
 register_routes(flask_app)
+flask_app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
+
 app = Dash(__name__, server=flask_app)
 
 us_college_map_fig = generate_us_college_map()

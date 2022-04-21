@@ -1,12 +1,10 @@
-from uiuc_411_project.db.mongodb import get_us_college_map_info, DEFAULT_FILE_PATH
+from uiuc_411_project.db.mongodb import get_us_college_map_info
 
 import plotly.graph_objects as go
-import pandas as pd
 
 
 def generate_us_college_map() -> go.Figure:
-    # _ = get_us_college_map_info()
-    df = pd.read_csv(DEFAULT_FILE_PATH)
+    df = get_us_college_map_info()
     df = df.sort_values(by=["professors"], ascending=False)
     df.head()
 
