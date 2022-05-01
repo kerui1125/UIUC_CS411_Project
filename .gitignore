@@ -3,3 +3,5 @@ uiuc_411_project/__pycache__/
 uiuc_411_project/db/__pycache__/
 uiuc_411_project/widgets/__pycache__/
 Pipfile.lock
+.DS_Store
+uiuc_411_project/.DS_Store
