@@ -8,7 +8,7 @@ from typing import Any
 from uiuc_411_project.utils import get_college_geo_coordinates
 
 DB_NAME = "academicworld"
-DEFAULT_FILE_PATH = "/Users/liukerui/Documents/CS411 Database Sys/final_project/UIUC_CS411_Project/us_college_map.csv"
+DEFAULT_FILE_PATH = "/Users/juntaoyu/Documents/GitHub/UIUC_CS411_Project/us_college_map.csv"
 
 
 def get_us_college_map_info(file_path: str = DEFAULT_FILE_PATH) -> defaultdict[Any, dict]:

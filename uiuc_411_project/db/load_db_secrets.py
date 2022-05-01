@@ -3,7 +3,9 @@ import json
 
 class secretloader:
     def __init__(self, databaseType):
-        f = open('dbsecret.json')
+        #f = open('dbsecret.json')
+        secret_file_path = '/Users/juntaoyu/Documents/GitHub/UIUC_CS411_Project/uiuc_411_project/db/dbsecret.json'
+        f = open(secret_file_path)
         self.secretData = json.load(f)
         self.loadSecretPerDBType(databaseType)
 
