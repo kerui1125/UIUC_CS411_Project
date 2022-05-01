@@ -35,14 +35,13 @@ def get_institutes():
     return institutes
 
 
-def get_faculties(institute):
+def get_faculties(institute: str):
     try:
         driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
         with driver.session(database='academicworld') as session:
             faculties = []
-            institute_str = "','".join(institute)
             result = session.run("MATCH (f:FACULTY)-[r:AFFILIATION_WITH]->(i:INSTITUTE) "
-                                 f"where i.name = '{institute_str}' "
+                                 f"where i.name = '{institute}' "
                                  "RETURN f.name")
             for data in result.data():
                 faculties.append(data['f.name'])
@@ -53,7 +52,7 @@ def get_faculties(institute):
     return faculties
 
 
-def get_selection_items(keywords, institutes):
+def get_selection_items(keywords: list, institutes: list):
     try:
         driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
         with driver.session(database='academicworld') as session:
