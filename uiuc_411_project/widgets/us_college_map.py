@@ -1,12 +1,11 @@
-from uiuc_411_project.db.mongodb import get_us_college_map_info, DEFAULT_FILE_PATH
-
+from dash import html, dcc
 import plotly.graph_objects as go
-import pandas as pd
+
+from uiuc_411_project.db.mongodb import get_us_college_map_info
 
 
-def generate_us_college_map() -> go.Figure:
-    # _ = get_us_college_map_info()
-    df = pd.read_csv(DEFAULT_FILE_PATH)
+def _generate_us_college_map() -> go.Figure:
+    df = get_us_college_map_info()
     df = df.sort_values(by=["professors"], ascending=False)
     df.head()
 
@@ -36,12 +35,18 @@ def generate_us_college_map() -> go.Figure:
         ))
 
     fig.update_layout(
-            title_text="US University Map",
-            showlegend=True,
-            geo=dict(
-                scope="usa",
-                landcolor="rgb(217, 217, 217)",
-            )
+        showlegend=True,
+        geo=dict(
+            scope="usa",
+            landcolor="rgb(217, 217, 217)",
         )
+    )
 
     return fig
+
+
+def generate_college_map_widget() -> list:
+    return [
+        html.H2(children='US College Faculty Map'),
+        dcc.Graph(figure=_generate_us_college_map())
+    ]
