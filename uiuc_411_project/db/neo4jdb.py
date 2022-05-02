@@ -4,7 +4,7 @@ DB_ADDRESS = "bolt://localhost: 7687"
 DB_AUTH = ("neo4j", "cs411")
 
 
-def get_keywords():
+def get_keywords() -> list:
     try:
         driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
         with driver.session(database='academicworld') as session:
@@ -20,7 +20,7 @@ def get_keywords():
     return keywords
 
 
-def get_institutes():
+def get_institutes() -> list:
     try:
         driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
         with driver.session(database='academicworld') as session:
@@ -35,24 +35,7 @@ def get_institutes():
     return institutes
 
 
-def get_faculties(institute: str):
-    try:
-        driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
-        with driver.session(database='academicworld') as session:
-            faculties = []
-            result = session.run("MATCH (f:FACULTY)-[r:AFFILIATION_WITH]->(i:INSTITUTE) "
-                                 f"where i.name = '{institute}' "
-                                 "RETURN f.name")
-            for data in result.data():
-                faculties.append(data['f.name'])
-        driver.close()
-    except Exception as e:
-        print(f"Error occurred: {e}")
-        exit(0)
-    return faculties
-
-
-def get_selection_items(keywords: list, institutes: list):
+def get_selection_items(keywords: list, institutes: list) -> list:
     try:
         driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
         with driver.session(database='academicworld') as session:
@@ -71,3 +54,57 @@ def get_selection_items(keywords: list, institutes: list):
         print(f"Error occurred: {e}")
         exit(0)
     return results
+
+
+def get_faculties(institute: str) -> list:
+    try:
+        driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
+        with driver.session(database='academicworld') as session:
+            faculties = []
+            result = session.run("MATCH (f:FACULTY)-[r:AFFILIATION_WITH]->(i:INSTITUTE) "
+                                 f"where i.name = '{institute}' "
+                                 "RETURN f.name")
+            for data in result.data():
+                faculties.append(data['f.name'])
+        driver.close()
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        exit(0)
+    return faculties
+
+
+def get_faculty_data(faculty_name: str) -> dict:
+    try:
+        driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
+        with driver.session(database='academicworld') as session:
+            faculty_all_info = {}
+            result = session.run("match (f:FACULTY)-[af:AFFILIATION_WITH]->(i:INSTITUTE) "
+                                 f"where f.name in ['{faculty_name}'] "
+                                 "return f.photoUrl, f.phone, f.position, f.email, i.name")
+            for data in result.data():
+                faculty_all_info["photoUrl"] = data.get("f.photoUrl", "")
+                faculty_all_info["phone"] = data.get("f.phone", "").split(" ")[1]
+                faculty_all_info["position"] = data.get("f.position", "")
+                faculty_all_info["email"] = data.get("f.email", "")
+                faculty_all_info["institute_name"] = data.get("i.name", "")
+        driver.close()
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        exit(0)
+    return faculty_all_info
+
+
+def add_a_faculty_member(name, phone, position, email, institute_name) -> None:
+    driver = GraphDatabase.driver(DB_ADDRESS, auth=DB_AUTH)
+    with driver.session(database='academicworld') as session:
+        session.run(
+            "CREATE (f:FACULTY {{name: '{name}', phone: '{phone}', position: '{position}', email: '{email}'}})"
+            .format(name=name, phone=phone, position=position, email=email)
+        )
+        session.run(
+            "CREATE (i:INSTITUTE {{name: '{institute_name}'}})".format(institute_name=institute_name)
+        )
+        session.run(
+            "MATCH (f:FACULTY), (i:INSTITUTE) WHERE f.name = '{name}' AND i.name = '{institute_name}' "
+            "CREATE (f)-[r:AFFILIATION_WITH]->(i)".format(name=name, institute_name=institute_name)
+        )

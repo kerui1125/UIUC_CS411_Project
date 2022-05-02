@@ -20,6 +20,8 @@ def generate_faculty_pie_chart_widget(app: Dash) -> list:
     keywords_from_db = get_keywords()
     institutes_from_db = get_institutes()
     return [
+        html.H1('Keywords Institutes Faculty Number Pie-chart'),
+        html.Br(),
         html.H2(children='Keywords Filter Selection'),
         dcc.Dropdown(
             id='keywords',
@@ -31,7 +33,7 @@ def generate_faculty_pie_chart_widget(app: Dash) -> list:
         dcc.Dropdown(
             id='institutes',
             options=institutes_from_db,
-            value=['Purdue University--West Lafayette', 'Northeastern University'],
+            value=['Purdue University--West Lafayette', 'University of Rochester'],
             multi=True
         ),
         html.H2(children='Pie Chart'),

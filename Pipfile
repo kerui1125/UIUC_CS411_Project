@@ -14,6 +14,7 @@ sqlalchemy = "*"
 plotly = "*"
 geopy = "*"
 certifi = "*"
+dash-bootstrap-components = "*"
 
 [dev-packages]
 

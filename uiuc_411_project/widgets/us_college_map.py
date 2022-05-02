@@ -47,6 +47,7 @@ def _generate_us_college_map() -> go.Figure:
 
 def generate_college_map_widget() -> list:
     return [
-        html.H2(children='US College Faculty Map'),
+        html.H1(children='US College Faculty Map'),
+        html.Br(),
         dcc.Graph(figure=_generate_us_college_map())
     ]

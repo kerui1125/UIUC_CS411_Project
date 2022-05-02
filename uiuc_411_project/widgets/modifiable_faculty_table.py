@@ -1,29 +1,77 @@
-from dash import dcc, html, Dash, Input, Output
+from dash import dcc, html, Dash, Input, Output, State
 
-from uiuc_411_project.db.neo4jdb import get_institutes, get_faculties
+from uiuc_411_project.db.neo4jdb import add_a_faculty_member
 
 
 def generate_modifiable_faculty_widget(app: Dash) -> list:
     @app.callback(
-        Output("faculty", "options"),
-        Input("universities", "value")
+        Output('add_faculty_result', 'children'),
+        Input('submit-val', 'n_clicks'),
+        State('input_name', 'value'),
+        State('input_phone', 'value'),
+        State('input_position', 'value'),
+        State('input_email', 'value'),
+        State('input_institute_name', 'value')
     )
-    def faculty_selection(university_input):
-        faculties_from_db = get_faculties(university_input)
-        return faculties_from_db
+    def add_a_new_faculty(n_clicks, name, phone, position, email, institute_name):
+        try:
+            if name is not None and institute_name is not None:
+                add_a_faculty_member(name, phone, position, email, institute_name)
+                return "Successfully added a new faculty member"
+        except Exception as e:
+            print(f"Error occurred due to: {e}")
+            return "Failed to add a new faculty member"
 
-    institutes_from_db = get_institutes()
     return [
-        # faculty add, delete, modify keywords widget
-        html.H2(children='Universities Selection'),
-        dcc.Dropdown(
-            id='universities',
-            options=institutes_from_db,
-            value=['University of illinois at Urbana Champaign']
-        ),
-        html.H2(children='Faculty Selection'),
-        dcc.Dropdown(id='faculty'),
-        # tab 1 - show/modify faculty info, editable datatable to show data
-        # tab 2 - add faculty info, editable datatable show to modify data, dropdowns inside datatable
-        # when add new faculty search for univ, keywords.
+        html.H1('Add Faculty Widget'),
+        html.Br(),
+        html.H2('Add a New Member'),
+        html.Table([
+            html.Tr([
+                html.Th('Input Fields'),
+                html.Th('Input Values')
+            ]),
+            html.Tr([
+                html.Td('Name'),
+                html.Td(dcc.Input(
+                    id='input_name',
+                    type='text',
+                    placeholder='Please enter a member name'
+                ))
+            ]),
+            html.Tr([
+                html.Td('Phone'),
+                html.Td(dcc.Input(
+                    id='input_phone',
+                    type='text',
+                    placeholder='Please enter a phone number'
+                ))
+            ]),
+            html.Tr([
+                html.Td('Position'),
+                html.Td(dcc.Input(
+                    id='input_position',
+                    type='text',
+                    placeholder='Please enter a position'
+                ))
+            ]),
+            html.Tr([
+                html.Td('Email'),
+                html.Td(dcc.Input(
+                    id='input_email',
+                    type='text',
+                    placeholder='Please enter an email address'
+                ))
+            ]),
+            html.Tr([
+                html.Td('Institute Name'),
+                html.Td(dcc.Input(
+                    id='input_institute_name',
+                    type='text',
+                    placeholder='Please enter an institute name'
+                ))
+            ])
+        ]),
+        html.Button('Submit', id='submit-val', n_clicks=0),
+        html.Div(id='add_faculty_result', children='')
     ]
